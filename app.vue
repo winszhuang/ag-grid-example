@@ -27,26 +27,31 @@ const rowData = ref<RowData[]>([
   { make: 'Volkswagen', model: 'Golf', price: 26000 },
 ])
 
-const { data, error } = useFetch('https://www.ag-grid.com/example-assets/row-data.json')
-
-watch(data, (value) => {
-  rowData.value = value as unknown as RowData[]
-})
+async function fetchLargeData() {
+  const { data, error } = await useFetch('https://www.ag-grid.com/example-assets/row-data.json')
+  if (!error.value) {
+    rowData.value = data.value as unknown as RowData[]
+  } else {
+    alert('Failed to get data!!')
+  }
+}
 
 </script>
 
 <template>
-  <div v-if="!error">
-    <ag-grid-vue 
-      :columnDefs="columnDefs"
-      :rowData="rowData"
-      class="ag-theme-alpine"
-      style="height: 500px"
-      rowSelection="multiple"
-      animateRows="true"
-    />
-  </div>
-  <div v-else>
-    fetch data get some error!!
+  <div>
+    <button @click="fetchLargeData">
+      click me to fetch large data
+    </button>
+    <div>
+      <ag-grid-vue 
+        :columnDefs="columnDefs"
+        :rowData="rowData"
+        class="ag-theme-alpine"
+        style="height: 500px"
+        rowSelection="multiple"
+        animateRows="true"
+      />
+    </div>
   </div>
 </template>
